@@ -23,6 +23,7 @@
     "prepublish": "npm run compile"
   },
   "dependencies": {
+    "http-range": "^1.0.0",
     "isomorphic-fetch": "^2.2.1"
   },
   "devDependencies": {

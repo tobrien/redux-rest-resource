@@ -1,4 +1,4 @@
-
+import { ContentRange } from 'http-range';
 
 const defaultActions = {
   create: {method: 'POST', alias: 'save'},
@@ -14,7 +14,20 @@ const defaultHeaders = {
 };
 
 const defaultTransformResponsePipeline = [
-  res => res.json().then(body => ({body, code: res.status}))
+  (res) => res.json().then(body => ({body, code: res.status, contentRange: res.headers.get('Content-Range')})),
+  (res) => {
+    const contentRange = res.contentRange;
+
+    if (contentRange) {
+      const cr = ContentRange.prototype.parse(contentRange);
+      res.contentRange = {
+        high: cr.range.high,
+        low: cr.range.low,
+        length: cr.length
+      };
+    }
+    return res;
+  }
 ];
 
 const defaultState = {
@@ -25,7 +38,12 @@ const defaultState = {
     items: [],
     isFetching: false,
     lastUpdated: 0,
-    didInvalidate: true
+    didInvalidate: true,
+    contentRange: {
+      high: 0,
+      low: 0,
+      length: 0
+    },
   },
   get: {
     item: null,

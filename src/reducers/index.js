@@ -41,6 +41,7 @@ const reducers = {
         return {...state,
           isFetching: false,
           didInvalidate: false,
+          contentRange: action.contentRange,
           items: action.body,
           lastUpdated: action.receivedAt
         };
